@@ -10,7 +10,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 public class KnapsackFF implements Function<Population, Phenotype> {
-    private static int score;
+    private int score;
 
     private Phenotype selection(Phenotype[] phenotypes) {
         int maxFit = Integer.MIN_VALUE;
@@ -94,10 +94,11 @@ public class KnapsackFF implements Function<Population, Phenotype> {
 
     @Override
     public Phenotype apply(Population population) {
-
         Phenotype fittestPhenotype = null;
-        while (population.getGeneration() < population.getMaxGeneration()) {
-            population.increaseGeneration();
+
+        int gen = population.getGeneration();
+        while (gen < population.getMaxGeneration()) {
+            gen++;
 
             // selection
             Phenotype phenotypeA = selection(population.getPhenotypes());
@@ -111,9 +112,12 @@ public class KnapsackFF implements Function<Population, Phenotype> {
             if (isValid(fittest, population.getCriteria())) {
                 fittestPhenotype = fittest;
                 score = fittestPhenotype.getFitness();
+                System.out.println("new fittest phenotype " + fittest.getFitness());
+                System.out.println("new score " + score);
             }
         }
 
+        System.out.println(fittestPhenotype.getFitness());
         return fittestPhenotype;
     }
 }

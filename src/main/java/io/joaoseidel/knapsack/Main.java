@@ -5,9 +5,9 @@ import io.joaoseidel.knapsack.genetic.models.Phenotype;
 import io.joaoseidel.knapsack.genetic.models.Population;
 
 public class Main {
-    private static final int POPULATION_SIZE = 10;
+    private static final int POPULATION_SIZE = 100;
     private static final int BAG_SIZE = 30;
-    private static final int MAX_GENERATION = 100;
+    private static final int MAX_GENERATION = 1000;
 
     public static void main(String[] args) {
         Population population = new Population.Builder(POPULATION_SIZE)
@@ -22,7 +22,7 @@ public class Main {
         System.out.println("Generations: " + population.getGeneration());
         System.out.println("The individual has a fitness of: " + fittest.getFitness());
         System.out.println("=============");
-        System.out.println("Best selection (binary): " + ChromosomeDecoder.encode(fittest.getChromosome()));
-        System.out.println("Best selection: " + ChromosomeDecoder.decode(fittest.getChromosome()));
+        System.out.println("😲 Best selection (binary): " + ChromosomeDecoder.encode(fittest.getChromosome()));
+        System.out.println("😲 Best selection: " + ChromosomeDecoder.decode(fittest.getChromosome()));
     }
 }
