@@ -7,7 +7,7 @@ import io.joaoseidel.knapsack.genetic.models.Population;
 public class Main {
     private static final int POPULATION_SIZE = 10;
     private static final int BAG_SIZE = 30;
-    private static final int MAX_GENERATION = 1000;
+    private static final int MAX_GENERATION = 100;
 
     public static void main(String[] args) {
         Population population = new Population.Builder(POPULATION_SIZE)

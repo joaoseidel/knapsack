@@ -1,9 +1,9 @@
 package io.joaoseidel.knapsack.genetic.models;
 
 public class Population {
-    private final Phenotype[] phenotypes;
     private final int maxGeneration;
     private final int criteria;
+    private Phenotype[] phenotypes;
     private int size;
     private int generation;
 
@@ -42,6 +42,11 @@ public class Population {
 
     public Phenotype[] getPhenotypes() {
         return phenotypes;
+    }
+
+    public Population setPhenotypes(Phenotype[] phenotypes) {
+        this.phenotypes = phenotypes;
+        return this;
     }
 
     public static class Builder {

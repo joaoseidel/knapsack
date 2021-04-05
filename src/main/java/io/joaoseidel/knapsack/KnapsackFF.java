@@ -6,36 +6,20 @@ import io.joaoseidel.knapsack.genetic.models.Gene;
 import io.joaoseidel.knapsack.genetic.models.Phenotype;
 import io.joaoseidel.knapsack.genetic.models.Population;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
 public class KnapsackFF implements Function<Population, Phenotype> {
     private static int score;
-    private List<Phenotype> roulette;
 
-    private Phenotype rouletteSelection() {
+    private Phenotype selection(Phenotype[] phenotypes) {
+        int maxFit = Integer.MIN_VALUE;
+
         Phenotype selected = null;
-
-        double totalSum = 0.0;
-        for (Phenotype phenotype : roulette) {
-            totalSum += phenotype.getFitness();
-        }
-
-        for (Phenotype phenotype : roulette) {
-            phenotype.setProbability(phenotype.getFitness() / totalSum);
-        }
-
-        double partialSum = 0;
-        double rouletteNumber = Math.random();
-
-        for (Phenotype phenotype : this.roulette) {
-            partialSum += phenotype.getProbability();
-            if (partialSum >= rouletteNumber) {
+        for (Phenotype phenotype : phenotypes) {
+            if (maxFit <= phenotype.getFitness()) {
+                maxFit = phenotype.getFitness();
                 selected = phenotype;
-                break;
             }
         }
 
@@ -75,6 +59,27 @@ public class KnapsackFF implements Function<Population, Phenotype> {
         phenotypeA.getChromosome().getGenes()[mutationPoint] = bGenes[mutationPoint].setActive(!active);
     }
 
+    private Phenotype reproduce(Phenotype phenotypeA, Phenotype phenotypeB, Population population) {
+        Phenotype fittest = phenotypeA;
+        if (phenotypeB.getFitness() > phenotypeA.getFitness()) {
+            fittest = phenotypeB;
+        }
+
+        final Phenotype[] phenotypes = population.getPhenotypes();
+        int minFitVal = Integer.MAX_VALUE;
+        int minFitIndex = 0;
+        for (int i = 0; i < phenotypes.length; i++) {
+            if (minFitVal >= phenotypes[i].getFitness()) {
+                minFitVal = phenotypes[i].getFitness();
+                minFitIndex = i;
+            }
+        }
+
+        phenotypes[minFitIndex] = fittest;
+        population.setPhenotypes(phenotypes);
+        return fittest;
+    }
+
     private boolean isValid(Phenotype phenotype, int criteria) {
         int count = 0;
         for (Gene gene : phenotype.getChromosome().getGenes()) {
@@ -89,26 +94,20 @@ public class KnapsackFF implements Function<Population, Phenotype> {
 
     @Override
     public Phenotype apply(Population population) {
-        this.roulette = new ArrayList<>(Arrays.asList(population.getPhenotypes()));
 
         Phenotype fittestPhenotype = null;
         while (population.getGeneration() < population.getMaxGeneration()) {
             population.increaseGeneration();
 
             // selection
-            Phenotype phenotypeA = rouletteSelection();
-            Phenotype phenotypeB = rouletteSelection();
+            Phenotype phenotypeA = selection(population.getPhenotypes());
+            Phenotype phenotypeB = selection(population.getPhenotypes());
 
             crossover(phenotypeA, phenotypeB);
             mutate(phenotypeA, phenotypeB);
+            Phenotype fittest = reproduce(phenotypeA, phenotypeB, population);
 
-            // which one between phenA and phenB is better
-            Phenotype fittest = phenotypeA;
-            if (phenotypeB.getFitness() > phenotypeA.getFitness()) {
-                fittest = phenotypeB;
-            }
-
-            // replace the fittest phenotype
+            // update score and select the fittest phenotype
             if (isValid(fittest, population.getCriteria())) {
                 fittestPhenotype = fittest;
                 score = fittestPhenotype.getFitness();

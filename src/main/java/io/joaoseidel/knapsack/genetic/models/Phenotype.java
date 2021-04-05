@@ -9,7 +9,6 @@ import java.util.Random;
 
 public class Phenotype implements Cloneable {
     private final Chromosome chromosome;
-    private double probability;
 
     private Phenotype(Builder builder) {
         chromosome = builder.chromosome;
@@ -28,15 +27,6 @@ public class Phenotype implements Cloneable {
 
     public Chromosome getChromosome() {
         return chromosome;
-    }
-
-    public double getProbability() {
-        return probability;
-    }
-
-    public Phenotype setProbability(double probability) {
-        this.probability = probability;
-        return this;
     }
 
     public static class Builder {
